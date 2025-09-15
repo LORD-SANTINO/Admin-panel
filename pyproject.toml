@@ -9,4 +9,4 @@ authors = [
   { name = "LORD-SANTINO", email = "mikkyrose297@gmail.com" }
 ]
 description = "A short description of your project"
-requires-python = ">=3.8"
+requires-python = ">=3.12"
