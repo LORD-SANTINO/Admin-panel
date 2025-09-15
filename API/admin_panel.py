@@ -4,10 +4,7 @@ from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, UserMixin, current_user
 import asyncpg
 
-app = Flask(
-    __name__,
-    template_folder=os.path.join(os.path.dirname(__file__), '../templates')
-)
+app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), '../templates'))
 
 DATABASE_URL = os.getenv('DATABASE_URL')
 app.secret_key = os.getenv('SECRET_KEY')
