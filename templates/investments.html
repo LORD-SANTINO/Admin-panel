@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head><title>Investments</title></head>
+<body>
+  <h2>Investments</h2>
+  <p><a href="{{ url_for('logout') }}">Logout</a></p>
+  <table border="1" cellpadding="5">
+    <tr><th>ID</th><th>User ID</th><th>Plan</th><th>Amount</th><th>Start Date</th><th>Maturity Date</th><th>Withdrawn</th></tr>
+    {% for inv in investments %}
+    <tr>
+      <td>{{ inv.investment_id }}</td>
+      <td>{{ inv.user_id }}</td>
+      <td>{{ inv.name }}</td>
+      <td>{{ inv.amount }}</td>
+      <td>{{ inv.start_date }}</td>
+      <td>{{ inv.maturity_date }}</td>
+      <td>{{ "Yes" if inv.withdrawn else "No" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <p><a href="{{ url_for('users') }}">View Users</a></p>
+</body>
+</html>
