@@ -4,7 +4,7 @@ from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, UserMixin, current_user
 import asyncpg
 
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__, template_folder='../templates')
 
 DATABASE_URL = os.getenv('DATABASE_URL')
 app.secret_key = os.getenv('SECRET_KEY')
@@ -69,8 +69,13 @@ def users():
                 "SELECT user_id, referrals, balance, joined_at FROM users ORDER BY joined_at DESC LIMIT 100"
             )
             return rows
-    users = asyncio.run(fetch_users())
-    return render_template("users.html", users=users)
+    
+    try:
+        users = asyncio.run(fetch_users())
+        return render_template("users.html", users=users)
+    except Exception as e:
+        flash(f"Error fetching users: {str(e)}", "error")
+        return render_template("users.html", users=[])
 
 @app.route("/investments")
 @login_required
@@ -86,17 +91,27 @@ def investments():
                 """
             )
             return rows
-    investments = asyncio.run(fetch_investments())
-    return render_template("investments.html", investments=investments)
+    
+    try:
+        investments = asyncio.run(fetch_investments())
+        return render_template("investments.html", investments=investments)
+    except Exception as e:
+        flash(f"Error fetching investments: {str(e)}", "error")
+        return render_template("investments.html", investments=[])
 
-# Initialize the database pool when the app starts
-def init_db():
-    global pool
+# Initialize database pool on app start
+try:
+    loop = asyncio.get_event_loop()
+except RuntimeError:
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    pool = loop.run_until_complete(create_db_pool())
 
-init_db()
+if loop.is_running():
+    # If loop is already running, create a task
+    pool_task = loop.create_task(create_db_pool())
+else:
+    # Otherwise, run it directly
+    pool = loop.run_until_complete(create_db_pool())
 
 # Vercel requires this named export
 handler = app
