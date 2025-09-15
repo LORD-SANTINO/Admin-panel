@@ -34,8 +34,8 @@ def login():
         password = request.form.get('password')
         
         # Get credentials from environment variables
-        admin_user = os.getenv('ADMIN_USERNAME', 'admin')
-        admin_pass = os.getenv('ADMIN_PASSWORD', 'password')
+        admin_user = 'admin'
+        admin_pass = 'password'
         
         if username == admin_user and password == admin_pass:
             user = AdminUser("admin")
