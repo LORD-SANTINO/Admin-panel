@@ -6,11 +6,12 @@ from flask_login import LoginManager, login_user, login_required, logout_user, U
 app = Flask(__name__, template_folder='templates')
 app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key')
 
-# Database connection function
+# Simple synchronous database connection
 def get_db_connection():
     conn = psycopg2.connect(os.getenv('DATABASE_URL'))
     return conn
 
+# ... keep the rest of your Flask code the same ...
 # Setup Login Manager
 login_manager = LoginManager()
 login_manager.init_app(app)
