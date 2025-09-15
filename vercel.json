@@ -1,23 +1,15 @@
 {
-    "version": 2,
-    "builds": [
-        {
-            "src": "API/admin_panel.py",
-            "use": "@vercel/python"
-        },
-        {
-            "src": "templates/**",
-            "use": "@vercel/static"
-        }
-    ],
-    "routes": [
-        {
-            "src": "/static/(.*)",
-            "dest": "/static/$1"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/API/admin_panel.py"
-        }
-    ]
+  "version": 2,
+  "builds": [
+    {
+      "src": "app.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/app.py"
+    }
+  ]
 }
