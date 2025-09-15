@@ -4,7 +4,7 @@ from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, UserMixin, current_user
 import asyncpg
 
-app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), '../templates'))
+app = Flask(__name__, template_folder='templates')
 
 DATABASE_URL = os.getenv('DATABASE_URL')
 app.secret_key = os.getenv('SECRET_KEY')
@@ -14,16 +14,14 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 # -- User class --
-
 class AdminUser(UserMixin):
     def __init__(self, id_):
         self.id = id_
 
-admin_username = "admin"  # Change this
-admin_password = "password"  # Store securely, for demo only plaintext here
+admin_username = 'admin'
+admin_password = 'password'
 
 # -- Async db pool: --
-
 pool = None
 
 async def create_db_pool():
@@ -91,10 +89,14 @@ def investments():
     investments = asyncio.run(fetch_investments())
     return render_template("investments.html", investments=investments)
 
-# Run database pool on app startup
-@app.before_first_request
-def startup():
-    asyncio.run(create_db_pool())
+# Initialize the database pool when the app starts
+def init_db():
+    global pool
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    pool = loop.run_until_complete(create_db_pool())
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=True)
+init_db()
+
+# Vercel requires this named export
+handler = app
